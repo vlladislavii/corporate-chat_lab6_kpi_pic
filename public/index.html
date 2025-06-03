@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Корпоративний чат</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .chat-container {
+      max-width: 500px;
+      margin: 80px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    #response {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #0d6efd;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="chat-container">
+      <h4 class="mb-4 text-center">Корпоративний чат</h4>
+
+      <form id="ipnForm">
+        <div class="mb-3">
+          <label for="ipnInput" class="form-label">Введіть ваш ІПН:</label>
+          <input type="text" class="form-control" id="ipnInput" placeholder="Наприклад: 395454021343" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Надіслати</button>
+      </form>
+
+      <div id="response" class="text-center"></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const form = document.getElementById('ipnForm');
+    const input = document.getElementById('ipnInput');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const ipn = input.value.trim();
+      if (ipn) {
+        socket.emit('driver ipn', ipn);
+      }
+    });
+
+    socket.on('fuel result', (message) => {
+      responseDiv.innerText = message;
+    });
+  </script>
+</body>
+</html>
